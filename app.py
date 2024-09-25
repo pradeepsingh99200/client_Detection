@@ -107,10 +107,22 @@ def result(total_blinks):
     health_status = "Your eyes are healthy" if total_blinks >= 7 else "Your eyes are unhealthy"
     return render_template('result.html', total_blinks=total_blinks, health_status=health_status)
 
+# def decode_base64_image(base64_string):
+#     img_data = base64.b64decode(base64_string)
+#     np_arr = np.frombuffer(img_data, np.uint8)
+#     img = cv.imdecode(np_arr, cv.IMREAD_COLOR)
+#     return img
+
 def decode_base64_image(base64_string):
+    if ',' in base64_string:
+        base64_string = base64_string.split(',')[1]
+    
     img_data = base64.b64decode(base64_string)
     np_arr = np.frombuffer(img_data, np.uint8)
     img = cv.imdecode(np_arr, cv.IMREAD_COLOR)
+    
+    if img is None:
+        raise ValueError("Decoding failed, invalid image data")
     return img
 
 if __name__ == '__main__':
