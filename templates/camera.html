@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blink Detection - Camera</title>
+    <style>
+        video { width: 60%; }
+        h2 { font-size: 24px; }
+    </style>
+</head>
+<body>
+    <h1>Blink Detection for {{ username }}</h1>
+    <video id="video" autoplay></video>
+    <h2 id="blinkCounter">Total Blinks: 0</h2>
+    <h2 id="ratio">Blink Ratio: N/A</h2>
+    <h2 id="status">Blink Status: Waiting...</h2>
+    <h2 id="timer">Time Left: 30s</h2>
+
+    <script>
+        const video = document.getElementById('video');
+        const blinkCounter = document.getElementById('blinkCounter');
+        const blinkStatus = document.getElementById('status');
+        const blinkRatioDisplay = document.getElementById('ratio');
+        const timerDisplay = document.getElementById('timer');
+        let timeLeft = 30;
+        let captureInterval;
+    
+        // Access the user's camera
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+            })
+            .catch(err => {
+                console.error('Error accessing camera: ', err);
+                alert('Could not access the camera. Please check permissions.');
+            });
+    
+        // Convert video frame to base64
+        function captureFrame() {
+            const canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            const context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+            return canvas.toDataURL('image/jpeg');
+        }
+    
+        // Start capturing frames every 100ms
+        captureInterval = setInterval(function() {
+            const frame = captureFrame();
+    
+            // Send frame to server for processing
+            fetch('/process_frame', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ frame: frame })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.redirect) {
+                    window.location.href = `/result/${data.total_blinks}`;
+                } else {
+                    blinkCounter.textContent = `Total Blinks: ${data.total_blinks}`;
+                    blinkStatus.textContent = `Blink Status: ${data.status}`;
+                    blinkRatioDisplay.textContent = `Blink Ratio: ${data.ratio}`;
+                }
+            });
+        }, 100);
+    
+        // Countdown timer
+        const timerInterval = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+    
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                clearInterval(captureInterval);
+            }
+        }, 1000);
+    </script>
+    
+</body>
+</html>
