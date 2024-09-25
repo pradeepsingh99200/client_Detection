@@ -18,6 +18,8 @@ TOTAL_BLINKS = 0
 CLOSED_EYES_FRAME = 3  # Number of frames where eyes are considered closed before counting a blink
 start_time = None
 
+
+
 # Euclidean distance function to calculate eye aspect ratio
 def euclideanDistance(point1, point2):
     return math.sqrt((point2[0] - point1[0]) ** 2 + (point2[1] - point1[1]) ** 2)
@@ -57,8 +59,8 @@ def index():
 @app.route('/camera', methods=['POST'])
 def camera():
     global TOTAL_BLINKS, CEF_COUNTER, start_time
-    TOTAL_BLINKS = 0  # Reset blink count
-    CEF_COUNTER = 0  # Reset closed eyes frame counter
+    TOTAL_BLINKS = 0  
+    CEF_COUNTER = 0  
     start_time = time.time()
     
     # Get user's name from the form submission
