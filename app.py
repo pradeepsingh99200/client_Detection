@@ -5,8 +5,10 @@ import numpy as np
 import math
 import time
 import base64
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)  # Enable CORS for all routes
 
 # Initialize Mediapipe Face Mesh
 mp_face_mesh = mp.solutions.face_mesh
@@ -17,8 +19,6 @@ CEF_COUNTER = 0
 TOTAL_BLINKS = 0
 CLOSED_EYES_FRAME = 3  # Number of frames where eyes are considered closed before counting a blink
 start_time = None
-
-
 
 # Euclidean distance function to calculate eye aspect ratio
 def euclideanDistance(point1, point2):
@@ -72,7 +72,14 @@ def process_frame():
     global TOTAL_BLINKS, CEF_COUNTER, start_time
     data = request.json
     base64_image = data['frame'].split(',')[1]  # Strip the header from base64
+
+    if not base64_image:  # Check if the base64 string is empty
+        return jsonify({'status': 'No image received', 'total_blinks': TOTAL_BLINKS, 'ratio': None})
+
     frame = decode_base64_image(base64_image)
+
+    if frame is None:  # Check if the frame is valid
+        return jsonify({'status': 'Invalid image', 'total_blinks': TOTAL_BLINKS, 'ratio': None})
 
     # Convert the frame to RGB for Mediapipe
     frame_rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
@@ -107,23 +114,11 @@ def result(total_blinks):
     health_status = "Your eyes are healthy" if total_blinks >= 7 else "Your eyes are unhealthy"
     return render_template('result.html', total_blinks=total_blinks, health_status=health_status)
 
-# def decode_base64_image(base64_string):
-#     img_data = base64.b64decode(base64_string)
-#     np_arr = np.frombuffer(img_data, np.uint8)
-#     img = cv.imdecode(np_arr, cv.IMREAD_COLOR)
-#     return img
-
 def decode_base64_image(base64_string):
-    if ',' in base64_string:
-        base64_string = base64_string.split(',')[1]
-    
     img_data = base64.b64decode(base64_string)
     np_arr = np.frombuffer(img_data, np.uint8)
     img = cv.imdecode(np_arr, cv.IMREAD_COLOR)
-    
-    if img is None:
-        raise ValueError("Decoding failed, invalid image data")
-    return img
+    return img if img is not None else None  # Return None if decoding fails
 
 if __name__ == '__main__':
     app.run(debug=True)
