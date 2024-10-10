@@ -17,7 +17,7 @@ face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_con
 # Variables for blink detection
 CEF_COUNTER = 0
 TOTAL_BLINKS = 0
-CLOSED_EYES_FRAME = 3  # Number of frames where eyes are considered closed before counting a blink
+CLOSED_EYES_FRAME = 3  
 start_time = None
 
 # Euclidean distance function to calculate eye aspect ratio
@@ -55,6 +55,7 @@ def blinkRatio(landmarks):
 @app.route('/')
 def index():
     return render_template('index.html')
+
 
 @app.route('/camera', methods=['POST'])
 def camera():
@@ -108,7 +109,7 @@ def process_frame():
         return jsonify({'redirect': True, 'total_blinks': TOTAL_BLINKS})
 
     return jsonify({'status': blink_status, 'total_blinks': TOTAL_BLINKS, 'ratio': blink_ratio})
-
+    
 @app.route('/result/<int:total_blinks>')
 def result(total_blinks):
     health_status = "Your eyes are healthy" if total_blinks >= 7 else "Your eyes are unhealthy"
@@ -121,4 +122,6 @@ def decode_base64_image(base64_string):
     return img if img is not None else None  # Return None if decoding fails
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000, ssl_context=('cert.pem', 'key.pem'))
+
+app = Flask(__name__)

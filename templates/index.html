@@ -4,19 +4,66 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Blink Detection - Start</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f0f4f8;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 {
+            color: #007bff;
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+        .form-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 300px; /* Fixed width for the form */
+            text-align: center;
+        }
+        input[type="text"] {
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ced4da;
+        }
+        button {
+            background-color: #007bff;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        label {
+            display: block;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Welcome to Blink Detection</h1>
-    <form action="/camera" method="POST">
-        <input type="text" name="username" placeholder="Enter your name" required>
-        <label>
-            <input type="checkbox" required> Grant camera access
-        </label>
-        <button type="submit">Start Detection</button>
-    </form>
+
+    <div class="form-container">
+        <h1>Welcome to Blink Detection</h1>
+        <form action="/camera" method="POST">
+            <input type="text" name="username" placeholder="Enter your name" required>
+            <label>
+                <input type="checkbox" required> Grant camera access
+            </label>
+            <button type="submit">Start Detection</button>
+        </form>
+    </div>
+
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
-
-
-
