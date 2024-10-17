@@ -3,7 +3,7 @@ import cv2 as cv
 import mediapipe as mp
 import numpy as np
 import math
-import time
+import time 
 import base64
 from flask_cors import CORS
 
@@ -125,3 +125,4 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, ssl_context=('cert.pem', 'key.pem'))
 
 app = Flask(__name__)
+    
