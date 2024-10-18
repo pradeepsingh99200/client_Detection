@@ -122,7 +122,7 @@ def decode_base64_image(base64_string):
     return img if img is not None else None  # Return None if decoding fails
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, ssl_context=('cert.pem', 'key.pem'))
+    app.run(host='0.0.0.0', port=5000)
 
 app = Flask(__name__)
     
