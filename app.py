@@ -6,6 +6,7 @@ import math
 import time 
 import base64
 from flask_cors import CORS
+import logging
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for all routes
@@ -122,7 +123,7 @@ def decode_base64_image(base64_string):
     return img if img is not None else None  # Return None if decoding fails
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, ssl_context=('cert.pem', 'key.pem'))
+    logging.basicConfig(filename='', level=logging.DEBUG)
+    app.run(debug=True)
 
-app = Flask(__name__)
     
